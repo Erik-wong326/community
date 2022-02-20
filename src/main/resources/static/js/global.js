@@ -1,3 +1,5 @@
+var CONTEXT_PATH = ""; // 更改项目名则可以在这里修改
+
 window.alert = function(message) {
 	if(!$(".alert-box").length) {
 		$("body").append(

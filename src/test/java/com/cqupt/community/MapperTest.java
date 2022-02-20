@@ -1,8 +1,10 @@
 package com.cqupt.community;
 
 import com.cqupt.community.dao.DiscussPostMapper;
+import com.cqupt.community.dao.LoginTicketMapper;
 import com.cqupt.community.dao.UserMapper;
 import com.cqupt.community.entity.DiscussPost;
+import com.cqupt.community.entity.LoginTicket;
 import com.cqupt.community.entity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +32,9 @@ public class MapperTest {
 
     @Autowired
     private DiscussPostMapper discussPostMapper;
+
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
 
     @Test
     public void testSelect(){
@@ -81,4 +86,30 @@ public class MapperTest {
         System.out.println(rows);
 
     }
+
+    //登录凭证DAO测试
+    //新增测试
+    @Test
+    public void testInsertLoginTicket(){
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(101);
+        loginTicket.setTicket("jarvis");
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+
+        loginTicketMapper.insertLoginTicket(loginTicket);
+    }
+
+    //查找,修改测试
+    @Test
+    public void testSelectLoginTicket(){
+        LoginTicket loginTicket = loginTicketMapper.selectByTicket("jarvis");
+        System.out.println(loginTicket);
+
+        loginTicketMapper.updateStatus("jarvis",1);
+        loginTicket = loginTicketMapper.selectByTicket("jarvis");
+        System.out.println(loginTicket);
+    }
+
+
 }

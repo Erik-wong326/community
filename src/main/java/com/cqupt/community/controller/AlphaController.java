@@ -1,15 +1,14 @@
 package com.cqupt.community.controller;
 
 import com.cqupt.community.service.AlphaService;
+import com.cqupt.community.util.CommunityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -154,4 +153,68 @@ public class AlphaController {
         list.add(emp);
         return list;
     }
+
+    /**
+     * cookie测试示例
+     * 模拟服务器设置cookie 并传递给浏览器
+     * @param response 返回页面响应
+     * @return
+     */
+    @RequestMapping(path = "/cookie/set" , method = RequestMethod.GET)
+    @ResponseBody
+    public String setCookie(HttpServletResponse response){
+        // 1.创建 Cookie
+        Cookie cookie = new Cookie("code", CommunityUtil.generateUUID());
+        // 2.设置 Cookie 生效的范围
+        cookie.setPath("/alpha");
+        // 3.设置 Cookie 生命周期
+        cookie.setMaxAge(60 * 10);
+        // 4.发送 Cookie
+        response.addCookie(cookie);
+        return "set cookie";
+    }
+
+    /**
+     * cookie测试示例2
+     * 模拟服务器从浏览器获取 cookie
+     * @param code cookie的值
+     * @return
+     */
+    @RequestMapping(path = "/cookie/get", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCookie(@CookieValue("code") String code){
+        System.out.println(code);
+        return "get cookie";
+    }
+
+    /**
+     * session测试示例1
+     * 模拟服务器设置 session
+     * @param session
+     * @return
+     */
+    @RequestMapping(path = "/session/set", method = RequestMethod.GET)
+    @ResponseBody
+    public String setSession(HttpSession session){
+        session.setAttribute("id",101);
+        session.setAttribute("name","Test1");
+        return "set Session";
+    }
+
+    /**
+     * session测试实例2
+     * 模拟服务器获取 session 信息
+     * @param session
+     * @return
+     */
+    @RequestMapping(path = "/session/get" , method = RequestMethod.GET)
+    @ResponseBody
+    public String getSession(HttpSession session){
+        System.out.println(session.getAttribute("id"));
+        System.out.println(session.getAttribute("name"));
+        return "get Session";
+    }
+
+
+
 }
