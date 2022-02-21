@@ -27,5 +27,19 @@ public interface DiscussPostMapper {
     //则参数之前必须取别名 -> @Param 给参数取别名
     int selectDiscussPostRows(@Param("userId")int userId);
 
+    /**
+     * 功能3:发布帖子
+     * @param discussPost
+     * @return
+     */
+    int insertDiscussPost(DiscussPost discussPost);
+
+    /**
+     * 功能4:查询帖子详情
+     * @param id 用户id
+     * @return
+     */
+    DiscussPost selectDiscussPostById(int id);
+
 
 }
