@@ -2,9 +2,11 @@ package com.cqupt.community;
 
 import com.cqupt.community.dao.DiscussPostMapper;
 import com.cqupt.community.dao.LoginTicketMapper;
+import com.cqupt.community.dao.MessageMapper;
 import com.cqupt.community.dao.UserMapper;
 import com.cqupt.community.entity.DiscussPost;
 import com.cqupt.community.entity.LoginTicket;
+import com.cqupt.community.entity.Message;
 import com.cqupt.community.entity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +37,9 @@ public class MapperTest {
 
     @Autowired
     private LoginTicketMapper loginTicketMapper;
+
+    @Autowired
+    private MessageMapper messageMapper;
 
     @Test
     public void testSelect(){
@@ -109,6 +114,36 @@ public class MapperTest {
         loginTicketMapper.updateStatus("jarvis",1);
         loginTicket = loginTicketMapper.selectByTicket("jarvis");
         System.out.println(loginTicket);
+    }
+
+    /**
+     * 私信功能测试
+     * 获取私信列表
+     */
+    @Test
+    public void testSelectLetters() {
+        //会话查询
+        List<Message> list = messageMapper.selectConversations(111, 0, 20);
+        for (Message message : list) {
+            System.out.println(message);
+        }
+
+        //会话数量查询
+        int count = messageMapper.selectConversationCount(111);
+        System.out.println(count);
+
+        //查询某一会话下的私信, 例如 111_112的所有信息
+        list = messageMapper.selectLetters("111_112", 0, 10);
+        for (Message message : list) {
+            System.out.println(message);
+        }
+        //查询 111_112的所有信息数量
+        count = messageMapper.selectLetterCount("111_112");
+        System.out.println(count);
+        //查询111_131会话中 111发给131但131(userId)未读的信息数量
+        count = messageMapper.selectLetterUnreadCount(131, "111_131");
+        System.out.println(count);
+
     }
 
 
