@@ -10,7 +10,7 @@ import java.util.Date;
 public class Comment {
     private int id;
     private int userId;
-    private int entityType; //帖子类型:学习帖(0)、问题帖(1)等
+    private int entityType; //帖子类型:学习帖(0)、问题(1)、评论(2)等
     private int entityId; // 帖子id
     private int targetId; // a评论,b回复a评论, targetId记录 a 的id
     private String content;
