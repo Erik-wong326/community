@@ -8,13 +8,17 @@ package com.cqupt.community.util;
  */
 public class RedisKeyUtil {
 
+    //Redis-关注,取关
     private static final String SPLIT = ":";
     private static final String PREFIX_ENTITY_LIKE = "like:entity";
     private static final String PREFIX_USER_LIKE = "like:user";
     private static final String PREFIX_FOLLOWEE = "followee"; //关注的目标
     private static final String PREFIX_FOLLOWER = "follower"; //粉丝
+    //Redis存储验证码
     private static final String PREFIX_KAPTCHA = "kaptcha";
+    //Redis存储登录凭证
     private static final String PREFIX_TICKET = "ticket";
+    //Redis缓存用户信息
     private static final String PREFIX_USER = "user";
 
     // 某个实体的赞
@@ -41,7 +45,15 @@ public class RedisKeyUtil {
         return PREFIX_FOLLOWER + SPLIT + entityType + SPLIT + entityId;
     }
 
-    // 登录验证码
+    /**
+     * 登录验证码功能
+     *
+     * 为了给每个用户返回不一样的验证码
+     * 但未登录状态又不能使用 userId 作为用户凭证
+     * -> 建立一个短期的临时凭证存在 cookie 用于标记用户
+     * @param owner 用户临时凭证
+     * @return
+     */
     public static String getKaptchaKey(String owner) {
         return PREFIX_KAPTCHA + SPLIT + owner;
     }
