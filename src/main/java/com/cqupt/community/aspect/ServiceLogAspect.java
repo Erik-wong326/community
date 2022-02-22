@@ -35,6 +35,11 @@ public class ServiceLogAspect {
         //1.用户ip获取
         //1.1 利用 RequestContextHolder.getRequestAttributes() 转换为子类型 ServletRequestAttributes
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes == null){
+            //Event空指针异常原因:之前都是通过Controller访问Service,可以获取request
+            //现在是直接使用Consumer调用Service,于是获取不了request
+            return;
+        }
         HttpServletRequest request = attributes.getRequest();//获取request
         //获取ip
         String ip = request.getRemoteHost();

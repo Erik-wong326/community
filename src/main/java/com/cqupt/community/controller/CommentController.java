@@ -1,7 +1,12 @@
 package com.cqupt.community.controller;
 
 import com.cqupt.community.entity.Comment;
+import com.cqupt.community.entity.DiscussPost;
+import com.cqupt.community.entity.Event;
+import com.cqupt.community.event.EventProducer;
 import com.cqupt.community.service.CommentService;
+import com.cqupt.community.service.DiscussPostService;
+import com.cqupt.community.util.CommunityConstant;
 import com.cqupt.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,13 +23,19 @@ import java.util.Date;
  */
 @Controller
 @RequestMapping("/comment")
-public class CommentController {
+public class CommentController implements CommunityConstant {
 
     @Autowired
     private CommentService commentService;
 
     @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private EventProducer eventProducer;
+
+    @Autowired
+    private DiscussPostService discussPostService;
 
     /**
      * /add/{discussPostId} -> 添加之后跳转到当前帖子的页面
@@ -39,6 +50,25 @@ public class CommentController {
         comment.setStatus(0);
         comment.setCreateTime(new Date());
         commentService.addComment(comment);
+
+        // 触发评论事件
+        Event event = new Event()
+                .setTopic(TOPIC_COMMENT)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(comment.getEntityType())
+                .setEntityId(comment.getEntityId())
+                .setData("postId", discussPostId); //点击查看的链接 - postId (帖子id)
+
+        //根据不同类型(帖子/评论) 设置不同的 entityUserId
+        if (comment.getEntityType() == ENTITY_TYPE_POST) { //entityType是帖子discussPost
+            DiscussPost target = discussPostService.findDiscussPostById(comment.getEntityId());//找到对应帖子
+            event.setEntityUserId(target.getUserId());//设置实体作者id
+        } else if (comment.getEntityType() == ENTITY_TYPE_COMMENT) { //entityType是comment
+            Comment target = commentService.findCommentById(comment.getEntityId()); //找到对应Comment
+            event.setEntityUserId(target.getUserId());
+        }
+
+        eventProducer.fireEvent(event);
 
         return "redirect:/discuss/detail/" + discussPostId;
     }
