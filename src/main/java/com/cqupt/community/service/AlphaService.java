@@ -45,17 +45,17 @@ public class AlphaService {
     private TransactionTemplate transactionTemplate;
 
     public AlphaService(){
-        System.out.println("实例化 AlphaService");
+//        System.out.println("实例化 AlphaService");
     }
 
     @PostConstruct  //在构造器之后调用
     public void init(){
-        System.out.println("初始化 AlphaService");
+//        System.out.println("初始化 AlphaService");
     }
 
     @PreDestroy
     public void destory(){
-        System.out.println("销毁 AlphaService");
+//        System.out.println("销毁 AlphaService");
     }
 
     //模拟实现查询业务,体会 Service 调用 Dao

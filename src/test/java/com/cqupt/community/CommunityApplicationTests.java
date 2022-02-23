@@ -2,7 +2,7 @@ package com.cqupt.community;
 
 import com.cqupt.community.dao.AlphaDao;
 import com.cqupt.community.service.AlphaService;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
