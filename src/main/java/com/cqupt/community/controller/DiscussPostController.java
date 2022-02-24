@@ -1,9 +1,7 @@
 package com.cqupt.community.controller;
 
-import com.cqupt.community.entity.Comment;
-import com.cqupt.community.entity.DiscussPost;
-import com.cqupt.community.entity.Page;
-import com.cqupt.community.entity.User;
+import com.cqupt.community.entity.*;
+import com.cqupt.community.event.EventProducer;
 import com.cqupt.community.service.CommentService;
 import com.cqupt.community.service.DiscussPostService;
 import com.cqupt.community.service.LikeService;
@@ -44,6 +42,9 @@ public class DiscussPostController implements CommunityConstant {
     @Autowired
     private LikeService likeService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     /**
      * 发布帖子
      * @param title  标题
@@ -64,6 +65,15 @@ public class DiscussPostController implements CommunityConstant {
         post.setContent(content);
         post.setCreateTime(new Date());
         discussPostService.addDiscussPost(post);
+
+        //触发发帖事件
+        //发布帖子时，将帖子异步的提交到Elasticsearch服务器。
+        Event event = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(user.getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(post.getId());
+        eventProducer.fireEvent(event);
 
         // 报错的情况,将来统一处理.
         return CommunityUtil.getJSONString(0, "发布成功!");
