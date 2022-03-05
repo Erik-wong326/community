@@ -81,6 +81,13 @@ public class DiscussPostController implements CommunityConstant {
         return CommunityUtil.getJSONString(0, "发布成功!");
     }
 
+    /**
+     * 查询帖子详情
+     * @param discussPostId
+     * @param model
+     * @param page
+     * @return
+     */
     @RequestMapping(path = "/detail/{discussPostId}", method = RequestMethod.GET)
     public String getDiscussPost(@PathVariable("discussPostId") int discussPostId, Model model, Page page) {
         // 查询帖子
@@ -165,6 +172,69 @@ public class DiscussPostController implements CommunityConstant {
         model.addAttribute("comments", commentVoList);
 
         return "/site/discuss-detail";
+    }
+
+
+    /**
+     * 置顶
+     * 加精和删帖逻辑是一样的
+     * @param id
+     * @return
+     */
+    @RequestMapping(path = "/top", method = RequestMethod.POST)
+    @ResponseBody
+    public String setTop(int id) {
+        //1.修改帖子状态
+        discussPostService.updateType(id, 1);
+
+        //2. 触发发帖事件
+        Event event = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(id);
+        eventProducer.fireEvent(event);
+
+        //3.返回成功状态
+        return CommunityUtil.getJSONString(0);
+    }
+
+    // 加精
+    @RequestMapping(path = "/wonderful", method = RequestMethod.POST)
+    @ResponseBody
+    public String setWonderful(int id) {
+        discussPostService.updateStatus(id, 1);
+
+        // 触发发帖事件
+        Event event = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(id);
+        eventProducer.fireEvent(event);
+
+        // 计算帖子分数
+//        String redisKey = RedisKeyUtil.getPostScoreKey();
+//        redisTemplate.opsForSet().add(redisKey, id);
+
+        return CommunityUtil.getJSONString(0);
+    }
+
+    // 删除
+    @RequestMapping(path = "/delete", method = RequestMethod.POST)
+    @ResponseBody
+    public String setDelete(int id) {
+        discussPostService.updateStatus(id, 2);
+
+        // 触发删帖事件
+        Event event = new Event()
+                .setTopic(TOPIC_DELETE)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(id);
+        eventProducer.fireEvent(event);
+
+        return CommunityUtil.getJSONString(0);
     }
 
 }

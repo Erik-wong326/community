@@ -192,8 +192,8 @@ public class MessageController implements CommunityConstant {
         // 1.查询评论类通知
         // 理解第1个逻辑,2,3都一样
         Message message = messageService.findLatestNotice(user.getId(), TOPIC_COMMENT);
-        Map<String, Object> messageVO = new HashMap<>();
         if (message != null) {
+            Map<String, Object> messageVO = new HashMap<>();
             messageVO.put("message", message);
             //针对content 需要把JSON字符串,转换为对象输出
             //还原转义字符 -> HtmlUtils.htmlUnescape
@@ -212,13 +212,13 @@ public class MessageController implements CommunityConstant {
 
             int unread = messageService.findNoticeUnreadCount(user.getId(), TOPIC_COMMENT);
             messageVO.put("unread", unread);
+            model.addAttribute("commentNotice", messageVO);
         }
-        model.addAttribute("commentNotice", messageVO);
 
         // 2.查询点赞类通知
         message = messageService.findLatestNotice(user.getId(), TOPIC_LIKE);
-        messageVO = new HashMap<>();
         if (message != null) {
+            Map<String, Object> messageVO = new HashMap<>();
             messageVO.put("message", message);
 
             String content = HtmlUtils.htmlUnescape(message.getContent());
@@ -234,13 +234,13 @@ public class MessageController implements CommunityConstant {
 
             int unread = messageService.findNoticeUnreadCount(user.getId(), TOPIC_LIKE);
             messageVO.put("unread", unread);
+            model.addAttribute("likeNotice", messageVO);
         }
-        model.addAttribute("likeNotice", messageVO);
 
         // 3.查询关注类通知
         message = messageService.findLatestNotice(user.getId(), TOPIC_FOLLOW);
-        messageVO = new HashMap<>();
         if (message != null) {
+            Map<String, Object> messageVO = new HashMap<>();
             messageVO.put("message", message);
 
             String content = HtmlUtils.htmlUnescape(message.getContent());
@@ -255,8 +255,8 @@ public class MessageController implements CommunityConstant {
 
             int unread = messageService.findNoticeUnreadCount(user.getId(), TOPIC_FOLLOW);
             messageVO.put("unread", unread);
+            model.addAttribute("followNotice", messageVO);
         }
-        model.addAttribute("followNotice", messageVO);
 
         // 4.查询未读消息数量
         // 未读私信

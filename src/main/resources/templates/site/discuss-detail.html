@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -68,9 +68,13 @@
 				<img src="http://static.nowcoder.com/images/img/icons/ico-discuss.png"/>
 				<span th:utext="${post.title}">备战春招，面试刷题跟他复习，一个月全搞定！</span>
 				<div class="float-right">
-					<button type="button" class="btn btn-danger btn-sm">置顶</button>
-					<button type="button" class="btn btn-danger btn-sm">加精</button>
-					<button type="button" class="btn btn-danger btn-sm">删除</button>
+					<input type="hidden" id="postId" th:value="${post.id}">
+					<button type="button" class="btn btn-danger btn-sm" id="topBtn"
+							th:disabled="${post.type==1}" sec:authorize="hasAnyAuthority('moderator')">置顶</button>
+					<button type="button" class="btn btn-danger btn-sm" id="wonderfulBtn"
+							th:disabled="${post.status==1}" sec:authorize="hasAnyAuthority('moderator')">加精</button>
+					<button type="button" class="btn btn-danger btn-sm" id="deleteBtn"
+							th:disabled="${post.status==2}" sec:authorize="hasAnyAuthority('admin')">删除</button>
 				</div>
 			</h6>
 			<!-- 作者 -->
@@ -273,18 +277,18 @@
 						<div class="col">
 							<ul class="nav btn-group-vertical company-info">
 								<li class="nav-item text-white-50">
-									公司地址：重庆市渝中区亭和路时代广场3-2708重庆科技有限公司
+									公司地址：北京市朝阳区大屯路东金泉时代3-2708北京牛客科技有限公司
 								</li>
 								<li class="nav-item text-white-50">
-									联系方式：080-71725502(电话)&nbsp;&nbsp;&nbsp;&nbsp;admin@cqu.com
+									联系方式：010-60728802(电话)&nbsp;&nbsp;&nbsp;&nbsp;admin@nowcoder.com
 								</li>
 								<li class="nav-item text-white-50">
-									cq科技©2018 All rights reserved
+									牛客科技©2018 All rights reserved
 								</li>
 								<li class="nav-item text-white-50">
-									渝ICP备14055008号-4 &nbsp;&nbsp;&nbsp;&nbsp;
+									京ICP备14055008号-4 &nbsp;&nbsp;&nbsp;&nbsp;
 									<img src="http://static.nowcoder.com/company/images/res/ghs.png" style="width:18px;" />
-									渝公网安备 11010502036488号
+									京公网安备 11010502036488号
 								</li>
 							</ul>
 						</div>
