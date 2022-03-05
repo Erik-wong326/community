@@ -74,13 +74,13 @@ public class FollowService implements CommunityConstant {
         });
     }
 
-    // 查询关注的实体的数量
+    // 查询关注的实体的数量 -- 关注了 x 人
     public long findFolloweeCount(int userId, int entityType) {
         String followeeKey = RedisKeyUtil.getFolloweeKey(userId, entityType);
         return redisTemplate.opsForZSet().zCard(followeeKey);
     }
 
-    // 查询实体的粉丝的数量
+    // 查询实体的粉丝的数量 -- 关注者 x 人
     public long findFollowerCount(int entityType, int entityId) {
         String followerKey = RedisKeyUtil.getFollowerKey(entityType, entityId);
         return redisTemplate.opsForZSet().zCard(followerKey);
@@ -93,6 +93,7 @@ public class FollowService implements CommunityConstant {
     }
 
     /**
+     * 关注列表
      * 查询某用户关注的人
      * @param userId
      * @param offset 分页条件
@@ -100,7 +101,8 @@ public class FollowService implements CommunityConstant {
      * @return
      */
     public List<Map<String, Object>> findFollowees(int userId, int offset, int limit) {
-        String followeeKey = RedisKeyUtil.getFolloweeKey(userId, ENTITY_TYPE_USER);
+        String followeeKey = RedisKeyUtil.getFolloweeKey(userId, ENTITY_TYPE_USER); //关注的人的Key
+        //倒序查询
         Set<Integer> targetIds = redisTemplate.opsForZSet().reverseRange(followeeKey, offset, offset + limit - 1);
 
         if (targetIds == null) {
@@ -108,12 +110,13 @@ public class FollowService implements CommunityConstant {
         }
 
         List<Map<String, Object>> list = new ArrayList<>();
-        for (Integer targetId : targetIds) {
+        for (Integer targetId : targetIds) {//遍历关注的人
+            //将 关注者:关注时间 放入map并添加到list中
             Map<String, Object> map = new HashMap<>();
             User user = userService.findUserById(targetId);
             map.put("user", user);
-            Double score = redisTemplate.opsForZSet().score(followeeKey, targetId);
-            map.put("followTime", new Date(score.longValue()));
+            Double score = redisTemplate.opsForZSet().score(followeeKey, targetId); //关注的时间:什么时候关注的
+            map.put("followTime", new Date(score.longValue())); //转化为Date
             list.add(map);
         }
 
@@ -121,6 +124,7 @@ public class FollowService implements CommunityConstant {
     }
 
     /**
+     * 粉丝列表
      * 查询某用户的粉丝
       * @param userId
      * @param offset
@@ -128,7 +132,8 @@ public class FollowService implements CommunityConstant {
      * @return
      */
     public List<Map<String, Object>> findFollowers(int userId, int offset, int limit) {
-        String followerKey = RedisKeyUtil.getFollowerKey(ENTITY_TYPE_USER, userId);
+        String followerKey = RedisKeyUtil.getFollowerKey(ENTITY_TYPE_USER, userId);////粉丝的Key
+        //倒序查询有多少粉丝
         Set<Integer> targetIds = redisTemplate.opsForZSet().reverseRange(followerKey, offset, offset + limit - 1);
 
         if (targetIds == null) {
@@ -136,7 +141,8 @@ public class FollowService implements CommunityConstant {
         }
 
         List<Map<String, Object>> list = new ArrayList<>();
-        for (Integer targetId : targetIds) {
+        for (Integer targetId : targetIds) {//遍历粉丝
+            //将 粉丝:关注时间 放入map 并添加到 list 中
             Map<String, Object> map = new HashMap<>();
             User user = userService.findUserById(targetId);
             map.put("user", user);

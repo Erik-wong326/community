@@ -54,11 +54,13 @@ public class DiscussPostController implements CommunityConstant {
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     @ResponseBody
     public String addDiscussPost(String title, String content) {
+        //1.获取当前用户
         User user = hostHolder.getUser();
         if (user == null) {
             return CommunityUtil.getJSONString(403, "你还没有登录!");
         }
 
+        //2.设置帖子信息
         DiscussPost post = new DiscussPost();
         post.setUserId(user.getId());
         post.setTitle(title);
@@ -66,7 +68,7 @@ public class DiscussPostController implements CommunityConstant {
         post.setCreateTime(new Date());
         discussPostService.addDiscussPost(post);
 
-        //触发发帖事件
+        //3.触发发帖事件
         //发布帖子时，将帖子异步的提交到Elasticsearch服务器。
         Event event = new Event()
                 .setTopic(TOPIC_PUBLISH)
@@ -109,6 +111,7 @@ public class DiscussPostController implements CommunityConstant {
         List<Map<String, Object>> commentVoList = new ArrayList<>();
         if (commentList != null) {
             for (Comment comment : commentList) {
+                //1.处理帖子的评论
                 // 评论VO
                 Map<String, Object> commentVo = new HashMap<>();
                 // 评论
@@ -122,6 +125,7 @@ public class DiscussPostController implements CommunityConstant {
                 likeStatus = hostHolder.getUser() == null ? 0 :
                         likeService.findEntityLikeStatus(hostHolder.getUser().getId(),ENTITY_TYPE_COMMENT,comment.getId());
                 commentVo.put("likeStatus",likeStatus);
+                //2.处理回复
                 // 回复列表
                 List<Comment> replyList = commentService.findCommentsByEntity(
                         ENTITY_TYPE_COMMENT, comment.getId(), 0, Integer.MAX_VALUE);

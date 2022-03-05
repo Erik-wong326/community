@@ -31,7 +31,7 @@ public class CommentService implements CommunityConstant {
 
     /**
      * 查询页面数据集合
-     * @param entityType
+     * @param entityType 帖子/回复
      * @param entityId
      * @param offset
      * @param limit

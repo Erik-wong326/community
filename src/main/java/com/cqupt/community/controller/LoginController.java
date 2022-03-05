@@ -121,7 +121,7 @@ public class LoginController implements CommunityConstant {
      * redis ->重构生成验证码功能
      * 使用redis存储验证码
      * @param response 响应,设置图片格式和输出流
-     * @param session session -> 存储验证码数据
+     * //@param session session -> 存储验证码数据
      */
     @RequestMapping(path = "/kaptcha", method = RequestMethod.GET)
     public void getKaptcha(HttpServletResponse response/*, HttpSession session*/) {
@@ -141,7 +141,7 @@ public class LoginController implements CommunityConstant {
         String redisKey = RedisKeyUtil.getKaptchaKey(kaptchaOwner);
         redisTemplate.opsForValue().set(redisKey, text, 60, TimeUnit.SECONDS);
 
-        // 将突图片输出给浏览器
+        // 将图片输出给浏览器
         response.setContentType("image/png");
         try {
             OutputStream os = response.getOutputStream();
@@ -185,13 +185,13 @@ public class LoginController implements CommunityConstant {
         // 2.检查账号,密码
         int expiredSeconds = rememberme ? REMEMBER_EXPIRED_SECONDS : DEFAULT_EXPIRED_SECONDS;
         Map<String, Object> map = userService.login(username, password, expiredSeconds);
-        if (map.containsKey("ticket")) {
+        if (map.containsKey("ticket")) { //包含ticket则代表登录成功
             //有 ticket 则代表成功,返回 cookie
             Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
             cookie.setMaxAge(expiredSeconds);
             response.addCookie(cookie);
             return "redirect:/index";
-        } else {//没有 ticket 则返回登录页面
+        } else {//没有 ticket 则返回登录页面(代表登录失败)
             model.addAttribute("usernameMsg", map.get("usernameMsg"));
             model.addAttribute("passwordMsg", map.get("passwordMsg"));
             return "/site/login";

@@ -108,11 +108,11 @@ public class ElasticsearchTests {
     @Test
     public void testSearchByRepository() {
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(QueryBuilders.multiMatchQuery("互联网寒冬", "title", "content")) //构造搜索条件
-                .withSort(SortBuilders.fieldSort("type").order(SortOrder.DESC))  //构造查询(排序)条件
+                .withQuery(QueryBuilders.multiMatchQuery("互联网寒冬", "title", "content")) //QueryBuilders 构造搜索条件
+                .withSort(SortBuilders.fieldSort("type").order(SortOrder.DESC))  //SortBuilders 构造查询(排序)条件
                 .withSort(SortBuilders.fieldSort("score").order(SortOrder.DESC))
                 .withSort(SortBuilders.fieldSort("createTime").order(SortOrder.DESC))
-                .withPageable(PageRequest.of(0, 10))  //构造分页条件
+                .withPageable(PageRequest.of(0, 10))  //PageRequest 构造分页条件
                 .withHighlightFields(  // 高亮显示
                         new HighlightBuilder.Field("title").preTags("<em>").postTags("</em>"),
                         new HighlightBuilder.Field("content").preTags("<em>").postTags("</em>")

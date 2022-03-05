@@ -51,6 +51,7 @@ public class CommentController implements CommunityConstant {
         comment.setCreateTime(new Date());
         commentService.addComment(comment);
 
+        //Kafka显示系统通知功能
         // 触发评论事件
         Event event = new Event()
                 .setTopic(TOPIC_COMMENT)
@@ -70,6 +71,7 @@ public class CommentController implements CommunityConstant {
 
         eventProducer.fireEvent(event);
 
+        //ES搜素功能
         //增加评论时，将帖子异步的提交到Elasticsearch服务器。
         if (comment.getEntityType() == ENTITY_TYPE_POST) { //对帖子的评论才提交到ES
             // 触发发帖事件

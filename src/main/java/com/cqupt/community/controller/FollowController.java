@@ -52,6 +52,8 @@ public class FollowController implements CommunityConstant {
         User user = hostHolder.getUser();
 
         followService.follow(user.getId(), entityType, entityId);
+
+        //Kafka显示系统通知功能
         // 触发关注事件
         Event event = new Event()
                 .setTopic(TOPIC_FOLLOW)
@@ -121,21 +123,22 @@ public class FollowController implements CommunityConstant {
      */
     @RequestMapping(path = "/followers/{userId}", method = RequestMethod.GET)
     public String getFollowers(@PathVariable("userId") int userId, Page page, Model model) {
+        //1.获取用户
         User user = userService.findUserById(userId);
         if (user == null) {
             throw new RuntimeException("该用户不存在!");
         }
         model.addAttribute("user", user);
-
+        //2.设置分页
         page.setLimit(5);
         page.setPath("/followers/" + userId);
         page.setRows((int) followService.findFollowerCount(ENTITY_TYPE_USER, userId));
-
+        //3.获取"我"关注的所有人
         List<Map<String, Object>> userList = followService.findFollowers(userId, page.getOffset(), page.getLimit());
         if (userList != null) {
             for (Map<String, Object> map : userList) {
                 User u = (User) map.get("user");
-                map.put("hasFollowed", hasFollowed(u.getId()));
+                map.put("hasFollowed", hasFollowed(u.getId()));//判断是否互关
             }
         }
         model.addAttribute("users", userList);
@@ -147,7 +150,6 @@ public class FollowController implements CommunityConstant {
         if (hostHolder.getUser() == null) {
             return false;
         }
-
         return followService.hasFollowed(hostHolder.getUser().getId(), ENTITY_TYPE_USER, userId);
     }
 }

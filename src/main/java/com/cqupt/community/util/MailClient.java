@@ -13,6 +13,7 @@ import javax.mail.internet.MimeMessage;
 import java.sql.Struct;
 
 /**
+ *
  * @author Erik_Wong
  * @version 1.0
  * @date 2022/2/17 0:46

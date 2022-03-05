@@ -4,6 +4,9 @@ import com.cqupt.community.entity.LoginTicket;
 import org.apache.ibatis.annotations.*;
 
 /**
+ * Deprecated
+ * 登录凭证采用存储到 Redis 的方式
+ * 此方法就废弃了
  * @author Erik_Wong
  * @version 1.0
  * @date 2022/2/19 10:43

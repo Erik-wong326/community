@@ -15,16 +15,24 @@ import java.util.UUID;
  */
 public class CommunityUtil {
 
-    //生成随机字符串作为激活码
+    /**
+     * 生成随机字符串作为激活码
+     */
     public static String generateUUID(){
         //randomUUID会产生我们不需要的"-" -> replaceAll用 "" 替换
         return UUID.randomUUID().toString().replaceAll("-","");
     }
 
-    //MD5码加密 , MD5特点:只能加密不能解密
-    //避免简单密码被破解 -> salt值
-    //hello ->(md5) abc123def123
-    //hello + 3e4a(salt) ->(md5) abc123def495
+
+    /**
+     * MD5码加密 , MD5特点:只能加密不能解密
+     * 避免简单密码被破解 -> salt值
+     * 例如:
+     * hello ->(md5) abc123def123
+     * hello + 3e4a(salt) ->(md5) abc123def495
+     * @param key
+     * @return
+     */
     public static String md5Encode(String key){
         if (StringUtils.isBlank(key)){
             return null;

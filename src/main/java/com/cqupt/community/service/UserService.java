@@ -70,6 +70,7 @@ public class UserService implements CommunityConstant {
      * @param user
      * 返回具有多种情况
      * 如：账号不为空/密码不为空/邮箱不为空 等
+     * 所以采用 Map<String, Object>
      * @return
      */
     public Map<String, Object> register(User user){
@@ -84,9 +85,11 @@ public class UserService implements CommunityConstant {
         }
         if (StringUtils.isBlank(user.getPassword())){
             map.put("PasswordMsg","密码不能为空");
+            return map;
         }
         if (StringUtils.isBlank(user.getEmail())){
             map.put("emailMsg","邮箱不能为空");
+            return map;
         }
 
         //验证账号是否唯一

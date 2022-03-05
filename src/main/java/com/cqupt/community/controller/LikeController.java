@@ -59,6 +59,7 @@ public class LikeController implements CommunityConstant {
         map.put("likeCount", likeCount);
         map.put("likeStatus", likeStatus);
 
+        //Kafka显示系统通知功能
         // 触发点赞事件
         if (likeStatus == 1) { // 点赞则触发(取消点赞的逻辑不处理)
             Event event = new Event()

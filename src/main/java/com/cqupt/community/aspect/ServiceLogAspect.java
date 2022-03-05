@@ -31,7 +31,7 @@ public class ServiceLogAspect {
 
     @Before("pointcut()")
     public void before(JoinPoint joinPoint) {
-        // 日志格式:用户[1.2.3.4],在[xxx],访问了[com.nowcoder.community.service.xxx()].
+        // 日志格式:用户[1.2.3.4],在[xxx],访问了[com.cqupt.community.service.xxx()].
         //1.用户ip获取
         //1.1 利用 RequestContextHolder.getRequestAttributes() 转换为子类型 ServletRequestAttributes
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
