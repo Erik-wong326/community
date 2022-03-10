@@ -6,9 +6,13 @@ import com.cqupt.community.dao.UserMapper;
 import com.cqupt.community.entity.DiscussPost;
 import com.cqupt.community.entity.User;
 import com.cqupt.community.util.CommunityUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -31,6 +35,8 @@ import java.util.Date;
 @Service
 //@Scope("prototype")  //非单例，每次访问这个 Bean 都会创建新的实例
 public class AlphaService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AlphaService.class);
 
     @Autowired
     private AlphaDao alphaDao;
@@ -133,4 +139,21 @@ public class AlphaService {
         });
     }
 
+    /**
+     *  Spring多线程方法测试
+     *  注解 Async : 让该方法在多线程的环境下,被异步的调用.
+     */
+    @Async
+    public void execute1(){
+        logger.debug("execute1 spring普通线程池测试");
+    }
+
+    /**
+     * initialDelay:开始运行以后延迟 x 秒开始执行此线程
+     * fixedRate:间隔 x 秒再次执行本线程
+     */
+//    @Scheduled(initialDelay = 10000,fixedRate = 1000)
+    public void execute2(){
+        logger.debug("execute2 spring定时任务线程池测试");
+    }
 }
