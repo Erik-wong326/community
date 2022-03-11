@@ -19,7 +19,8 @@ public interface DiscussPostMapper {
     //但是 用户个人主页->我发布的帖子需要使用userId -> userId我们称为动态条件
     //此时就需要写动态 SQL 语句
     //分页 offset:起始行行号 , limit:每页最多显示多少数据
-    List<DiscussPost> selectDiscussPost(int userId,int offset,int limit);
+//    List<DiscussPost> selectDiscussPost(int userId,int offset,int limit);
+    List<DiscussPost> selectDiscussPost(int userId, int offset, int limit, int orderMode);
 
     //首页查询功能2
     //查询帖子的行数
